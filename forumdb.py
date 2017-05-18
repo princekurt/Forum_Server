@@ -2,6 +2,7 @@
 
 import datetime
 import psycopg2
+import bleach
 
 DBNAME = "forum"
 
@@ -18,7 +19,8 @@ def add_post(content):
   """Add a post to the 'database' with the current timestamp."""
   db = psycopg2.connect(database=DBNAME)
   c = db.cursor()
-  c.execute("insert into posts values (%s)", (content,))
+  output = bleach.clean(content)
+  c.execute("insert into posts values (%s)", (output,))
   db.commit()
   db.close()
 
